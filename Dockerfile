@@ -59,3 +59,7 @@ RUN cd /tmp \
     && ldconfig \
     && cd /tmp \
     && rm -rf ghostscript-${GS_VER}*
+
+# add Git SHA label to image build
+ARG GIT_COMMIT=unknown
+LABEL org.label-schema.vcs-ref=$GIT_COMMIT
