@@ -1,5 +1,5 @@
 # Start with Debian Jessie
-FROM debian:jessie
+FROM debian:jessie-slim
 
 MAINTAINER Jamin Kortegard <jamink919@gmail.com>
 
