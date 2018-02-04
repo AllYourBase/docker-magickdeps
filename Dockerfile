@@ -4,8 +4,9 @@ FROM debian:jessie
 MAINTAINER Jamin Kortegard <jamink919@gmail.com>
 
 # Get basic utils
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -y update && apt-get -y install --no-install-recommends \
         apt-utils \
+        && apt-get -y install --no-install-recommends \
         bzip2 \
         ca-certificates \
         curl \
@@ -13,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies for ImageMagick/GraphicsMagick.
-RUN apt-get -y update && apt-get install -y --no-install-recommends \
+RUN apt-get -y update && apt-get -y install --no-install-recommends \
         dcraw \
         libfreetype6 \
         libfreetype6-dev \
@@ -37,29 +38,24 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
         zlib1g-dev \
         && rm -rf /var/lib/apt/lists/*
 
-
-# Create temp dir for installations
-WORKDIR /tmp/install
-
 # Compilers for Ghostscript and GraphicsMagick/ImageMagick.
 # This will be wasted layer space afterwards. How to optimize?
-RUN apt-get -y update && apt-get install -y --no-install-recommends \
-        autoconf \
-        automake \
-        build-essential \
-        libx11-dev \
-        && rm -rf /var/lib/apt/lists/*
+RUN apt-get -y update && apt-get -y install --no-install-recommends \
+    autoconf \
+    automake \
+    build-essential \
+    libx11-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install specific Ghostscript 9.15
-ENV GS_VER 9.15
+# Install specific Ghostscript 9.19
+ENV GS_VER 9.19
 
-RUN curl -L -O http://downloads.ghostscript.com/public/ghostscript-${GS_VER}.tar.gz \
-    && tar -xzf ghostscript-${GS_VER}.tar.gz\
+RUN cd /tmp \
+    && curl -L -O https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs919/ghostscript-${GS_VER}.tar.gz \
+    && tar -xzf ghostscript-${GS_VER}.tar.gz \
     && cd ghostscript-${GS_VER} \
     && ./configure \
-    && make \
-    && make install \
-    && make clean \
+    && make && make install && make clean \
     && ldconfig \
-    && cd /tmp/install \
+    && cd /tmp \
     && rm -rf ghostscript-${GS_VER}*
